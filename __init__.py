@@ -11,8 +11,13 @@ bl_info = {
 
 import bpy
 import os
+from .menus import SlideShowMainMenu
+from .operators import ImportFiles
 
 def register():
-    print("Hello World")
+    bpy.utils.register_class(SlideShowMainMenu)
+    bpy.utils.register_class(ImportFiles)
+
 def unregister():
-    print("Goodbye World")
+    bpy.utils.unregister_class(SlideShowMainMenu)
+    bpy.utils.unregister_class(ImportFiles)
