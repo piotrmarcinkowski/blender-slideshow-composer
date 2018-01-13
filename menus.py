@@ -7,9 +7,8 @@ class SlideShowMainMenu(bpy.types.Menu):
     def draw(self, context):
         layout = self.layout
 
-        selection = bpy.context.selected_sequences
-
+        layout.operator_context = 'INVOKE_DEFAULT'
         layout.operator('slideshow_composer.import_files', icon='SEQUENCE', text='Import files')
     
-#if __name__ == "__main__":
-#    bpy.utils.register_class(SlideShowMainMenu)
+if __name__ == "__main__":
+   bpy.utils.register_class(SlideShowMainMenu)

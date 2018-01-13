@@ -12,3 +12,7 @@ Create menu shortcut
 7. Assign a key eg. Shift + Q
 
 ![Menu Key Shortcut](docs/blender_menu_shortcut.png)
+
+Used libraries and 3rd party code
+---------------------------------
+* https://github.com/JacquesLucke/code_autocomplete
