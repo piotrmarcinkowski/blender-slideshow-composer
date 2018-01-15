@@ -36,15 +36,32 @@ class ImportFiles(bpy.types.Operator):
         frame_current = bpy.context.scene.frame_current
 
         for file in self.files:
-            file_list = [{'name': file['name']}]
-            bpy.ops.sequencer.image_strip_add(
-                directory = self.directory,
-                files = file_list,
-                show_multiview = False,
-                frame_start = frame_current,
-                frame_end = frame_current + self.imageStripFrames,
+            frame_end = frame_current + self.imageStripFrames
+            self.create_strip(
+                path = file['name'],
+                frame_start= frame_current,
+                frame_end= frame_end,
                 channel = 1)
-            frame_current += self.imageStripFrames
+
+            self.create_transform(
+                frame_start=frame_current,
+                frame_end=frame_end)
+
+            frame_current = frame_end + 1
+
+    def create_strip(self, path, frame_start, frame_end, channel):
+        file_list = [{'name': path}]
+
+        bpy.ops.sequencer.image_strip_add(
+            directory = self.directory,
+            files = file_list,
+            show_multiview = False,
+            frame_start = frame_start,
+            frame_end = frame_end,
+            channel = channel)
+
+    def create_transform(self, frame_start, frame_end):
+        bpy.ops.sequencer.effect_strip_add(frame_start=frame_start, frame_end=frame_end, type='TRANSFORM')
 
 #if __name__ == "__main__":
 #    bpy.utils.register_class(ImportFiles)
