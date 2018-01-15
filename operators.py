@@ -15,7 +15,7 @@ class ImportFiles(bpy.types.Operator):
 
     imageStripFrames = bpy.props.IntProperty(
         name="Image strip frames",
-        description="Number of frames imported images will get while importing to strips",
+        description="Number of frames the images will get while importing to sequencer",
         default=90,
         min=30)
 
