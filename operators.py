@@ -13,10 +13,10 @@ class ImportFiles(bpy.types.Operator):
         type=bpy.types.OperatorFileListElement,
     )
 
-    image_strip_frames = bpy.props.IntProperty(
+    imageStripFrames = bpy.props.IntProperty(
         name="Image strip frames",
-        description="How long imported images are displayed during playback",
-        default=120,
+        description="Number of frames imported images will get while importing to strips",
+        default=90,
         min=30)
 
     @classmethod
@@ -38,13 +38,13 @@ class ImportFiles(bpy.types.Operator):
         for file in self.files:
             file_list = [{'name': file['name']}]
             bpy.ops.sequencer.image_strip_add(
-                directory=self.directory,
-                files=file_list,
-                show_multiview=False,
-                frame_start=frame_current,
-                frame_end=frame_current + self.image_strip_frames,
-                channel=1)
-            frame_current += self.image_strip_frames
+                directory = self.directory,
+                files = file_list,
+                show_multiview = False,
+                frame_start = frame_current,
+                frame_end = frame_current + self.imageStripFrames,
+                channel = 1)
+            frame_current += self.imageStripFrames
 
 #if __name__ == "__main__":
 #    bpy.utils.register_class(ImportFiles)
