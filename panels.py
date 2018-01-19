@@ -26,9 +26,13 @@ class SlideshowComposerPanel(bpy.types.Panel):
         layout = self.layout
 
         row = layout.row()
-        row.prop(addon_prefs, "imageStripFrames")
+        row.prop(addon_prefs, "image_strip_frames")
+
+        row = layout.row()
+        row.prop(addon_prefs, "strips_cross_frames")
 
         row = layout.row()
         operator_props = row.operator("slideshow_composer.import_files")
-        operator_props.imageStripFrames = addon_prefs.imageStripFrames
+        operator_props.image_strip_frames = addon_prefs.image_strip_frames
+        operator_props.strips_cross_frames = addon_prefs.strips_cross_frames
 
