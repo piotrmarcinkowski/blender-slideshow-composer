@@ -12,7 +12,7 @@ bl_info = {
 import bpy
 import os
 from .menus import SlideShowMainMenu
-from .operators import ImportFiles
+from .operator_import import ImportFiles
 
 # load and reload submodules
 import importlib
