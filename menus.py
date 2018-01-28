@@ -17,6 +17,7 @@ class SlideShowMainMenu(bpy.types.Menu):
         operator_props.ken_burns_transformation_scale_max = addon_prefs.ken_burns_transformation_scale_max
         operator_props.ken_burns_transformation_rotation_max = addon_prefs.ken_burns_transformation_rotation_max
         operator_props.ken_burns_combined_effect_probability = addon_prefs.ken_burns_combined_effect_probability
+        operator_props.replace = True
 
 if __name__ == "__main__":
    bpy.utils.register_class(SlideShowMainMenu)
