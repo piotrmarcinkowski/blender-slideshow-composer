@@ -26,19 +26,27 @@ class KenBurnsEffect(bpy.types.Operator, preferences.KenBurnsEffectPreferences):
         """ Generate Ken Burns effect for selected transform strip """
         transform_strip = bpy.context.selected_sequences[0]
         transform_strip.use_uniform_scale = True
+        group = KenBurnsEffect.get_fcurves_group_name()
 
         seq = bpy.context.selected_sequences[0]
 
+        # remove previously generated effect keyframes
         if self.replace is True:
-            keyframes.delete_keyframes(seq)
+            keyframes.delete_keyframes(seq, group=group)
 
         seq.scale_start_x = 1.0
-        seq.keyframe_insert(data_path='scale_start_x', frame=seq.frame_start)
+
+        seq.keyframe_insert(data_path='scale_start_x', frame=seq.frame_start, group=group)
         # last added fcurve's keyframe_points interpolation
         bpy.context.scene.animation_data.action.fcurves[-1].keyframe_points[0].interpolation = "LINEAR"
         seq.scale_start_x = 1.3
         seq_last_frame = seq.frame_start + seq.frame_duration - 1;
-        seq.keyframe_insert(data_path='scale_start_x', frame=seq_last_frame)
+        seq.keyframe_insert(data_path='scale_start_x', frame=seq_last_frame, group=group)
+
+
+    @staticmethod
+    def get_fcurves_group_name():
+        return 'KenBurnsEffect'
 
 # if __name__ == "__main__":
 #    bpy.utils.register_class(ImportFiles)

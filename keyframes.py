@@ -43,15 +43,14 @@ def get_frame_number(keyframe_point):
 def delete_keyframes(sequence, group=None):
     """ Deletes all keyframes associated with the given sequence
 
-    :param sequence: Sequence to remove keyframes
-    :param group: Delete only keyframes of fcurves with the specified group
-    :return:
+    :param sequence: Sequence to remove keyframes for
+    :param group: Delete only keyframes of fcurves with the specified group name
     """
     fcurves = get_fcurves_for_sequence(sequence)
 
     for fcurve in fcurves:
         if group is not None:
-            if fcurve.group != group:
+            if fcurve.group.name != group:
                 print("Skipping fcurve with group:{}".format(fcurve.group))
                 continue
 
