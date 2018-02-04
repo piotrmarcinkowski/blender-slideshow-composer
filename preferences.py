@@ -1,18 +1,34 @@
 import bpy
 
 class KenBurnsEffectPreferences:
-    ken_burns_transformation_x_max = bpy.props.FloatProperty(
-        name="Transformation X max",
-        description="Ken Burns effect horizontal transformation max value",
-        default=2.5,
+    ken_burns_transformation_x_value = bpy.props.FloatProperty(
+        name="Transformation X",
+        description="Ken Burns effect horizontal transformation value",
+        default=8.0,
         min=0,
         max=50
     )
 
-    ken_burns_transformation_y_max = bpy.props.FloatProperty(
-        name="Transformation Y max",
-        description="Ken Burns effect vertical transformation max value",
-        default=2.5,
+    ken_burns_transformation_x_value_max_deviation = bpy.props.FloatProperty(
+        name="Transformation X max deviation",
+        description="Ken Burns effect horizontal transformation max value deviation",
+        default=2.0,
+        min=0,
+        max=50
+    )
+
+    ken_burns_transformation_y_value = bpy.props.FloatProperty(
+        name="Transformation Y",
+        description="Ken Burns effect vertical transformation value",
+        default=8.0,
+        min=0,
+        max=50
+    )
+
+    ken_burns_transformation_y_value_max_deviation = bpy.props.FloatProperty(
+        name="Transformation Y max deviation",
+        description="Ken Burns effect vertical transformation max value deviation",
+        default=2.0,
         min=0,
         max=50
     )
@@ -47,10 +63,10 @@ class SlideshowComposerPreferences(bpy.types.AddonPreferences, KenBurnsEffectPre
     bl_idname = __package__
 
     image_strip_frames = bpy.props.IntProperty(
-            name = "Image strip frames",
+            name="Image strip frames",
             description="Number of frames each imported image strip will last",
-            default = 90,
-            min = 5
+            default=90,
+            min=5
             )
 
     strips_cross_frames = bpy.props.IntProperty(
@@ -65,7 +81,7 @@ class SlideshowComposerPreferences(bpy.types.AddonPreferences, KenBurnsEffectPre
         layout.label(text="Slideshow Composer preferences")
         layout.prop(self, "image_strip_frames")
         layout.prop(self, "strips_cross_frames")
-        box = layout.box();
+        box = layout.box()
         box.label(text="Ken Burns effect for images")
         box.prop(self, "ken_burns_transformation_x_max")
         box.prop(self, "ken_burns_transformation_y_max")

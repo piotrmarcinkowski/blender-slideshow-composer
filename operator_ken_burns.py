@@ -15,10 +15,11 @@ class KenBurnsEffect(bpy.types.Operator, preferences.KenBurnsEffectPreferences):
         default=False
     )
 
-    class Animation:
-        def __init__(self, sequence):
+    class Animator:
+        def __init__(self, sequence, value, reverse=False):
             self.sequence = sequence
-            self.reverse = bool(random.getrandbits(1))
+            self.value = value
+            self.reverse = reverse
 
         def get_data_path(self):
             raise NotImplementedError("Override and return data_path")
@@ -29,21 +30,23 @@ class KenBurnsEffect(bpy.types.Operator, preferences.KenBurnsEffectPreferences):
         def set_up_second_keyframe(self):
             raise NotImplementedError("Override and set appropriate property's value before creating a keyframe")
 
-        def get_initial_scale(self):
+        def get_required_scale(self):
             return 1.0
 
         def generate(self):
+            data_path = self.get_data_path()
+
             if self.reverse:
                 self.set_up_second_keyframe()
             else:
                 self.set_up_first_keyframe()
-            data_path=self.get_data_path()
             self.create_keyframe(data_path=data_path, frame=self.sequence.frame_start)
+
             if self.reverse:
                 self.set_up_first_keyframe()
             else:
                 self.set_up_second_keyframe()
-            seq_last_frame = self.sequence.frame_start + self.sequence.frame_duration - 1;
+            seq_last_frame = self.sequence.frame_start + self.sequence.frame_duration - 1
             self.create_keyframe(data_path=data_path, frame=seq_last_frame)
 
         def create_keyframe(self, data_path, frame):
@@ -51,15 +54,36 @@ class KenBurnsEffect(bpy.types.Operator, preferences.KenBurnsEffectPreferences):
             # last added fcurve's keyframe_points interpolation
             bpy.context.scene.animation_data.action.fcurves[-1].keyframe_points[0].interpolation = "LINEAR"
 
-    class ScaleAnimation(Animation):
+    class ScaleAnimator(Animator):
+        initial_scale = None
+
         def get_data_path(self):
             return 'scale_start_x'
 
         def set_up_first_keyframe(self):
-            self.sequence.scale_start_x = 1.0
+            self.store_initial_scale()
+            self.sequence.scale_start_x = self.initial_scale
+
+        def store_initial_scale(self):
+            if self.initial_scale is None:
+                self.initial_scale = self.sequence.scale_start_x
 
         def set_up_second_keyframe(self):
-            self.sequence.scale_start_x = 1.3
+            self.store_initial_scale()
+            self.sequence.scale_start_x = self.initial_scale + 1.3
+
+    class TranslateXAnimator(Animator):
+        def get_data_path(self):
+            return 'translate_start_x'
+
+        def get_required_scale(self):
+            return 1.0 + self.value / 100
+
+        def set_up_first_keyframe(self):
+            self.sequence.translate_start_x = -self.value / 2
+
+        def set_up_second_keyframe(self):
+            self.sequence.translate_start_x = self.value / 2
 
     @classmethod
     def poll(self, context):
@@ -79,17 +103,27 @@ class KenBurnsEffect(bpy.types.Operator, preferences.KenBurnsEffectPreferences):
         group = KenBurnsEffect.get_fcurves_group_name()
 
         seq = bpy.context.selected_sequences[0]
-        image_width = seq.input_1.elements[0].orig_width
 
         # remove previously generated effect keyframes
         if self.replace is True:
             keyframes.delete_keyframes(seq, group=group)
 
-        animation = KenBurnsEffect.ScaleAnimation(seq)
-        animation.generate()
+        animation1 = KenBurnsEffect.ScaleAnimator(
+            seq,
+            value=random.uniform(0.0, self.ken_burns_transformation_scale_max),
+            reverse=bool(random.getrandbits(1)))
+        animation2 = KenBurnsEffect.TranslateXAnimator(
+            seq,
+            value=random.uniform(
+                self.ken_burns_transformation_x_value - self.ken_burns_transformation_x_value_max_deviation,
+                self.ken_burns_transformation_x_value + self.ken_burns_transformation_x_value_max_deviation),
+            reverse=bool(random.getrandbits(1)))
 
-    def generate_random_value(self, min, max):
-        return random.uniform(min, max)
+        seq.scale_start_x = animation2.get_required_scale()
+
+        #animation1.generate()
+        animation2.generate()
+
 
     @staticmethod
     def get_fcurves_group_name():
