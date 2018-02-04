@@ -1,4 +1,5 @@
 import bpy
+import random
 from . import preferences
 from . import keyframes
 
@@ -9,14 +10,63 @@ class KenBurnsEffect(bpy.types.Operator, preferences.KenBurnsEffectPreferences):
     bl_options = {'REGISTER', 'UNDO'}
 
     replace = bpy.props.BoolProperty(
-        name="Replace sequence existing effect",
+        name="Replace existing sequence effect",
         description="Remove previous sequence effect and generate new one",
         default=False
     )
 
+    class Animation:
+        def __init__(self, sequence):
+            self.sequence = sequence
+            self.reverse = bool(random.getrandbits(1))
+
+        def get_data_path(self):
+            raise NotImplementedError("Override and return data_path")
+
+        def set_up_first_keyframe(self):
+            raise NotImplementedError("Override and set appropriate property's value before creating a keyframe")
+
+        def set_up_second_keyframe(self):
+            raise NotImplementedError("Override and set appropriate property's value before creating a keyframe")
+
+        def get_initial_scale(self):
+            return 1.0
+
+        def generate(self):
+            if self.reverse:
+                self.set_up_second_keyframe()
+            else:
+                self.set_up_first_keyframe()
+            data_path=self.get_data_path()
+            self.create_keyframe(data_path=data_path, frame=self.sequence.frame_start)
+            if self.reverse:
+                self.set_up_first_keyframe()
+            else:
+                self.set_up_second_keyframe()
+            seq_last_frame = self.sequence.frame_start + self.sequence.frame_duration - 1;
+            self.create_keyframe(data_path=data_path, frame=seq_last_frame)
+
+        def create_keyframe(self, data_path, frame):
+            self.sequence.keyframe_insert(data_path=data_path, frame=frame, group=KenBurnsEffect.get_fcurves_group_name())
+            # last added fcurve's keyframe_points interpolation
+            bpy.context.scene.animation_data.action.fcurves[-1].keyframe_points[0].interpolation = "LINEAR"
+
+    class ScaleAnimation(Animation):
+        def get_data_path(self):
+            return 'scale_start_x'
+
+        def set_up_first_keyframe(self):
+            self.sequence.scale_start_x = 1.0
+
+        def set_up_second_keyframe(self):
+            self.sequence.scale_start_x = 1.3
+
     @classmethod
     def poll(self, context):
-        return len(bpy.context.selected_sequences) == 1 and bpy.context.selected_sequences[0].type == 'TRANSFORM'
+        # Check if image transform strip is selected
+        return len(bpy.context.selected_sequences) == 1 and \
+               bpy.context.selected_sequences[0].type == 'TRANSFORM' and \
+               bpy.context.selected_sequences[0].input_1.type == 'IMAGE'
 
     def execute(self, context):
         self.generate_effect()
@@ -29,20 +79,17 @@ class KenBurnsEffect(bpy.types.Operator, preferences.KenBurnsEffectPreferences):
         group = KenBurnsEffect.get_fcurves_group_name()
 
         seq = bpy.context.selected_sequences[0]
+        image_width = seq.input_1.elements[0].orig_width
 
         # remove previously generated effect keyframes
         if self.replace is True:
             keyframes.delete_keyframes(seq, group=group)
 
-        seq.scale_start_x = 1.0
+        animation = KenBurnsEffect.ScaleAnimation(seq)
+        animation.generate()
 
-        seq.keyframe_insert(data_path='scale_start_x', frame=seq.frame_start, group=group)
-        # last added fcurve's keyframe_points interpolation
-        bpy.context.scene.animation_data.action.fcurves[-1].keyframe_points[0].interpolation = "LINEAR"
-        seq.scale_start_x = 1.3
-        seq_last_frame = seq.frame_start + seq.frame_duration - 1;
-        seq.keyframe_insert(data_path='scale_start_x', frame=seq_last_frame, group=group)
-
+    def generate_random_value(self, min, max):
+        return random.uniform(min, max)
 
     @staticmethod
     def get_fcurves_group_name():
