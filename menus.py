@@ -16,8 +16,10 @@ class SlideShowMainMenu(bpy.types.Menu):
         operator_props.ken_burns_transformation_x_value_max_deviation = addon_prefs.ken_burns_transformation_x_value_max_deviation
         operator_props.ken_burns_transformation_y_value = addon_prefs.ken_burns_transformation_y_value
         operator_props.ken_burns_transformation_y_value_max_deviation = addon_prefs.ken_burns_transformation_y_value_max_deviation
-        operator_props.ken_burns_transformation_scale_max = addon_prefs.ken_burns_transformation_scale_max
-        operator_props.ken_burns_transformation_rotation_max = addon_prefs.ken_burns_transformation_rotation_max
+        operator_props.ken_burns_transformation_scale_value = addon_prefs.ken_burns_transformation_scale_value
+        operator_props.ken_burns_transformation_scale_value_max_deviation = addon_prefs.ken_burns_transformation_scale_value_max_deviation
+        operator_props.ken_burns_transformation_rotation_value = addon_prefs.ken_burns_transformation_rotation_value
+        operator_props.ken_burns_transformation_rotation_value_max_deviation = addon_prefs.ken_burns_transformation_rotation_value_max_deviation
         operator_props.ken_burns_combined_effect_probability = addon_prefs.ken_burns_combined_effect_probability
         operator_props.replace = True
 

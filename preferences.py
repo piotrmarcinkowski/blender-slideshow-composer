@@ -33,19 +33,35 @@ class KenBurnsEffectPreferences:
         max=50
     )
 
-    ken_burns_transformation_scale_max = bpy.props.FloatProperty(
+    ken_burns_transformation_scale_value = bpy.props.FloatProperty(
         name="Scale max",
-        description="Ken Burns effect scale max value",
-        default=1.15,
-        max=1.5,
-        min=1.0
+        description="Ken Burns effect scale value",
+        default=0.08,
+        max=0.2,
+        min=0.0
     )
 
-    ken_burns_transformation_rotation_max = bpy.props.FloatProperty(
-        name="Rotation max",
-        description="Ken Burns effect rotation max value",
-        default=0.0,
+    ken_burns_transformation_scale_value_max_deviation = bpy.props.FloatProperty(
+        name="Scale max deviation",
+        description="Ken Burns effect scale max deviation",
+        default=0.009,
+        max=0.3,
+        min=0.0
+    )
+
+    ken_burns_transformation_rotation_value = bpy.props.FloatProperty(
+        name="Rotation",
+        description="Ken Burns effect rotation value",
+        default=1.0,
         max=5.0,
+        min=0.0
+    )
+
+    ken_burns_transformation_rotation_value_max_deviation = bpy.props.FloatProperty(
+        name="Rotation max deviation",
+        description="Ken Burns effect rotation value max deviation",
+        default=1.0,
+        max=3.0,
         min=0.0
     )
 

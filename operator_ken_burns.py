@@ -65,12 +65,17 @@ class KenBurnsEffect(bpy.types.Operator, preferences.KenBurnsEffectPreferences):
             self.sequence.scale_start_x = self.initial_scale
 
         def store_initial_scale(self):
+            # scale can also be modified by other animators, eg. translation
+            # where some scale has to be applied to not let the image
+            # go out of its bounds during move animation. That's why scale
+            # animation cannot just set the scale value but has to take into
+            # account the initial value set by other animators
             if self.initial_scale is None:
                 self.initial_scale = self.sequence.scale_start_x
 
         def set_up_second_keyframe(self):
             self.store_initial_scale()
-            self.sequence.scale_start_x = self.initial_scale + 1.3
+            self.sequence.scale_start_x = self.initial_scale + self.value
 
     class TranslateXAnimator(Animator):
         def get_data_path(self):
@@ -84,6 +89,32 @@ class KenBurnsEffect(bpy.types.Operator, preferences.KenBurnsEffectPreferences):
 
         def set_up_second_keyframe(self):
             self.sequence.translate_start_x = self.value / 2
+
+    class TranslateYAnimator(Animator):
+        def get_data_path(self):
+            return 'translate_start_y'
+
+        def get_required_scale(self):
+            return 1.0 + self.value / 100
+
+        def set_up_first_keyframe(self):
+            self.sequence.translate_start_y = -self.value / 2
+
+        def set_up_second_keyframe(self):
+            self.sequence.translate_start_y = self.value / 2
+
+    class RotateAnimator(Animator):
+        def get_data_path(self):
+            return 'rotation_start'
+
+        def get_required_scale(self):
+            return 1.2
+
+        def set_up_first_keyframe(self):
+            self.sequence.rotation_start = -self.value / 2
+
+        def set_up_second_keyframe(self):
+            self.sequence.rotation_start = self.value / 2
 
     @classmethod
     def poll(self, context):
@@ -110,7 +141,9 @@ class KenBurnsEffect(bpy.types.Operator, preferences.KenBurnsEffectPreferences):
 
         animation1 = KenBurnsEffect.ScaleAnimator(
             seq,
-            value=random.uniform(0.0, self.ken_burns_transformation_scale_max),
+            value=random.uniform(
+                self.ken_burns_transformation_scale_value - self.ken_burns_transformation_scale_value_max_deviation,
+                self.ken_burns_transformation_scale_value + self.ken_burns_transformation_scale_value_max_deviation),
             reverse=bool(random.getrandbits(1)))
         animation2 = KenBurnsEffect.TranslateXAnimator(
             seq,
@@ -121,7 +154,7 @@ class KenBurnsEffect(bpy.types.Operator, preferences.KenBurnsEffectPreferences):
 
         seq.scale_start_x = animation2.get_required_scale()
 
-        #animation1.generate()
+        animation1.generate()
         animation2.generate()
 
 
