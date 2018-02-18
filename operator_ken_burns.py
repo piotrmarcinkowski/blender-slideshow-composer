@@ -77,6 +77,15 @@ class KenBurnsEffect(bpy.types.Operator, preferences.KenBurnsEffectPreferences):
             self.store_initial_scale()
             self.sequence.scale_start_x = self.initial_scale + self.value
 
+        @staticmethod
+        def create_random(preferences, sequence):
+            return KenBurnsEffect.ScaleAnimator(
+                sequence,
+                value = generate_random_float(
+                    preferences.ken_burns_transformation_scale_value,
+                    preferences.ken_burns_transformation_scale_value_max_deviation),
+                reverse = generate_random_bool())
+
     class TranslateXAnimator(Animator):
         def get_data_path(self):
             return 'translate_start_x'
@@ -89,6 +98,15 @@ class KenBurnsEffect(bpy.types.Operator, preferences.KenBurnsEffectPreferences):
 
         def set_up_second_keyframe(self):
             self.sequence.translate_start_x = self.value / 2
+
+        @staticmethod
+        def create_random(preferences, sequence):
+            return KenBurnsEffect.TranslateXAnimator(
+                sequence,
+                value=generate_random_float(
+                    preferences.ken_burns_transformation_x_value,
+                    preferences.ken_burns_transformation_x_value_max_deviation),
+                reverse=generate_random_bool())
 
     class TranslateYAnimator(Animator):
         def get_data_path(self):
@@ -103,6 +121,15 @@ class KenBurnsEffect(bpy.types.Operator, preferences.KenBurnsEffectPreferences):
         def set_up_second_keyframe(self):
             self.sequence.translate_start_y = self.value / 2
 
+        @staticmethod
+        def create_random(preferences, sequence):
+            return KenBurnsEffect.TranslateYAnimator(
+                sequence,
+                value=generate_random_float(
+                    preferences.ken_burns_transformation_y_value,
+                    preferences.ken_burns_transformation_y_value_max_deviation),
+                reverse=generate_random_bool())
+
     class RotateAnimator(Animator):
         def get_data_path(self):
             return 'rotation_start'
@@ -115,6 +142,15 @@ class KenBurnsEffect(bpy.types.Operator, preferences.KenBurnsEffectPreferences):
 
         def set_up_second_keyframe(self):
             self.sequence.rotation_start = self.value / 2
+
+        @staticmethod
+        def create_random(preferences, sequence):
+            return KenBurnsEffect.RotateAnimator(
+                sequence,
+                value=generate_random_float(
+                    preferences.ken_burns_transformation_rotate_value,
+                    preferences.ken_burns_transformation_rotate_value_max_deviation),
+                reverse=generate_random_bool())
 
     @classmethod
     def poll(self, context):
@@ -139,24 +175,51 @@ class KenBurnsEffect(bpy.types.Operator, preferences.KenBurnsEffectPreferences):
         if self.replace is True:
             keyframes.delete_keyframes(seq, group=group)
 
-        animation1 = KenBurnsEffect.ScaleAnimator(
-            seq,
-            value=random.uniform(
-                self.ken_burns_transformation_scale_value - self.ken_burns_transformation_scale_value_max_deviation,
-                self.ken_burns_transformation_scale_value + self.ken_burns_transformation_scale_value_max_deviation),
-            reverse=bool(random.getrandbits(1)))
-        animation2 = KenBurnsEffect.TranslateXAnimator(
-            seq,
-            value=random.uniform(
-                self.ken_burns_transformation_x_value - self.ken_burns_transformation_x_value_max_deviation,
-                self.ken_burns_transformation_x_value + self.ken_burns_transformation_x_value_max_deviation),
-            reverse=bool(random.getrandbits(1)))
+        # create random animators
+        animators = self.create_animators(seq)
+        print("Animators: {}".format(animators))
 
-        seq.scale_start_x = animation2.get_required_scale()
+        # some transformations may require additional scale being applied to
+        # the image initially. Go through chosen animators and set highest
+        # requested scale
+        start_scale = 1.0
+        for animator in animators:
+            start_scale = max(start_scale, animator.get_required_scale())
+        print("Set start scale {}".format(start_scale))
+        seq.scale_start_x = start_scale
 
-        animation1.generate()
-        animation2.generate()
+        # generate animation
+        for animator in animators:
+            animator.generate()
 
+    def create_animators(self, sequence=None):
+        print("Creating animators for sequence: {}".format(sequence))
+        animator_types = [
+            KenBurnsEffect.ScaleAnimator,
+            KenBurnsEffect.TranslateXAnimator,
+            KenBurnsEffect.TranslateYAnimator,
+            KenBurnsEffect.RotateAnimator]
+
+        # by default there is only one animator per image strip, eg. only translation.
+        # from time to time the number of combined animations can raise to 2
+        num_of_selected_animators = 1
+        if random.uniform(0, 100) < self.ken_burns_combined_effect_probability:
+            num_of_selected_animators = num_of_selected_animators + 1
+
+        # chose animator types for the given image strip
+        selected_animator_types = []
+        while len(selected_animator_types) < num_of_selected_animators:
+            animator_index = random.randint(0, len(animator_types)-1)
+            animator_type = animator_types.pop(animator_index)
+            print("Selected animator type:{} index:{}".format(animator_type, len(selected_animator_types)))
+            selected_animator_types.append(animator_type)
+
+        # create animator instances with random values
+        animators = []
+        for animator_type in selected_animator_types:
+            animators.append(animator_type.create_random(preferences=self, sequence=sequence))
+
+        return animators
 
     @staticmethod
     def get_fcurves_group_name():
@@ -164,3 +227,10 @@ class KenBurnsEffect(bpy.types.Operator, preferences.KenBurnsEffectPreferences):
 
 # if __name__ == "__main__":
 #    bpy.utils.register_class(ImportFiles)
+
+
+def generate_random_float(value, deviation):
+    return random.uniform(value - deviation, value + deviation)
+
+def generate_random_bool():
+    return bool(random.getrandbits(1))
