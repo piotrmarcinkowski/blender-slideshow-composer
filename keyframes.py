@@ -14,6 +14,9 @@ def get_fcurves_for_sequence(sequence):
     if bpy.context.scene.animation_data is None:
         return fcurves
 
+    if bpy.context.scene.animation_data.action is None:
+        return fcurves
+
     # example fcurve data_path: 'sequence_editor.sequences_all["Transform"].scale_start_x'
     # we want to extract the sequence name - 'Transform'
     regex = re.compile(pattern=".*\[\"{}\"\]".format(sequence_name))
