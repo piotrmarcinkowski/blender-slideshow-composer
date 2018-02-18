@@ -1,7 +1,7 @@
 import bpy
+from . import preferences
 
-
-class ImportFiles(bpy.types.Operator):
+class ImportFiles(bpy.types.Operator, preferences.ImportPreferences):
     bl_idname = "slideshow_composer.import_files"
     bl_label = "Import"
     bl_description = "Import all files from a directory"
@@ -12,19 +12,6 @@ class ImportFiles(bpy.types.Operator):
     files = bpy.props.CollectionProperty(
         name="File Path",
         type=bpy.types.OperatorFileListElement,
-    )
-
-    image_strip_frames = bpy.props.IntProperty(
-        name="Image strip frames",
-        description="Number of frames each imported image strip will last",
-        default=90,
-        min=30)
-
-    strips_cross_frames = bpy.props.IntProperty(
-        name="Strips cross effect frames",
-        description="Number of frames the cross effect between two strips will last",
-        default=10,
-        min=5
     )
 
     @classmethod
@@ -59,6 +46,9 @@ class ImportFiles(bpy.types.Operator):
                 frame_end=frame_end)
 
             current_strip.mute = True
+
+            if self.generate_ken_burns_effect:
+                bpy.ops.slideshow_composer.ken_burns_effect('EXEC_DEFAULT')
 
             if previous_transform_strip is not None:
                 self.create_cross(

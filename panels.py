@@ -1,6 +1,5 @@
 import bpy
 
-
 class SlideshowComposerPanel(bpy.types.Panel):
     """Creates a Panel in the Object properties window"""
     bl_label = "Slideshow Composer panel"
@@ -19,20 +18,27 @@ class SlideshowComposerPanel(bpy.types.Panel):
         return True
 
     def draw(self, context):
-        
+
         user_preferences = context.user_preferences
         addon_prefs = user_preferences.addons[__package__].preferences
-    
+
         layout = self.layout
 
-        row = layout.row()
+        box = layout.box()
+        box.label(text="Import media files")
+
+        row = box.row()
         row.prop(addon_prefs, "image_strip_frames")
 
-        row = layout.row()
+        row = box.row()
         row.prop(addon_prefs, "strips_cross_frames")
 
-        row = layout.row()
+        row = box.row()
+        row.prop(addon_prefs, "generate_ken_burns_effect")
+
+        row = box.row()
         operator_props = row.operator("slideshow_composer.import_files")
         operator_props.image_strip_frames = addon_prefs.image_strip_frames
         operator_props.strips_cross_frames = addon_prefs.strips_cross_frames
+        operator_props.generate_ken_burns_effect = addon_prefs.generate_ken_burns_effect
 

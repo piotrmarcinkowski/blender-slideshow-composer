@@ -73,17 +73,13 @@ class KenBurnsEffectPreferences:
         max=100
     )
 
-class SlideshowComposerPreferences(bpy.types.AddonPreferences, KenBurnsEffectPreferences):
-    # this must match the addon name, use '__package__'
-    # when defining this in a submodule of a python package.
-    bl_idname = __package__
-
+class ImportPreferences:
     image_strip_frames = bpy.props.IntProperty(
-            name="Image strip frames",
-            description="Number of frames each imported image strip will last",
-            default=90,
-            min=5
-            )
+        name="Image strip frames",
+        description="Number of frames each imported image strip will last",
+        default=90,
+        min=5
+    )
 
     strips_cross_frames = bpy.props.IntProperty(
         name="Strips cross effect frames",
@@ -91,6 +87,17 @@ class SlideshowComposerPreferences(bpy.types.AddonPreferences, KenBurnsEffectPre
         default=10,
         min=5
     )
+
+    generate_ken_burns_effect = bpy.props.BoolProperty(
+        name="Ken Burns effect",
+        description="Generates Ken Burns effect on imported images",
+        default=True
+    )
+
+class SlideshowComposerPreferences(bpy.types.AddonPreferences, KenBurnsEffectPreferences, ImportPreferences):
+    # this must match the addon name, use '__package__'
+    # when defining this in a submodule of a python package.
+    bl_idname = __package__
 
     def draw(self, context):
         layout = self.layout
