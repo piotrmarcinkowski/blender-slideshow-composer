@@ -21,8 +21,8 @@ class ImportFiles(bpy.types.Operator, strips.StripsCreator):
         return True
 
     def execute(self, context):
-        path_list = [x['name'] for x in self.files]
-        self.create_strips(files=file_utils.find_files_recursively(path_list))
+        file_list = [x['name'] for x in self.files]
+        self.create_strips(files=file_utils.find_files_recursively_in_dir(self.directory, file_list))
         return {'FINISHED'}
 
     def invoke(self, context, event):

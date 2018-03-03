@@ -10,6 +10,7 @@ def find_files_recursively(path_list, extension_list=[*IMAGE_EXTENSIONS, *MOVIE_
     found_files = []
     pattern = '|'.join(['(' + ext_pattern + ')' for ext_pattern in ['.*\.' + ext for ext in extension_list]])
     for path in path_list:
+        print('Checking path: {}'.format(path))
         if isfile(path) and match(pattern, path):
             found_files.append(path)
         if isdir(path):
@@ -20,6 +21,11 @@ def find_files_recursively(path_list, extension_list=[*IMAGE_EXTENSIONS, *MOVIE_
     return found_files
 
 
+def find_files_recursively_in_dir(directory, file_list, extension_list=[*IMAGE_EXTENSIONS, *MOVIE_EXTENSIONS]):
+    return find_files_recursively(path_list=[join(directory, file) for file in file_list],
+                                  extension_list=extension_list)
+
+
 def is_image(path):
     (root, ext) = splitext(path)
     return ext.lower()[1:] in IMAGE_EXTENSIONS
@@ -28,4 +34,3 @@ def is_image(path):
 def is_movie(path):
     (root, ext) = splitext(path)
     return ext.lower()[1:] in MOVIE_EXTENSIONS
-
