@@ -37,7 +37,17 @@ class SlideshowComposerPanel(bpy.types.Panel):
         row.prop(addon_prefs, "generate_ken_burns_effect")
 
         row = box.row()
-        operator_props = row.operator("slideshow_composer.import_files")
+        operator_props = row.operator("slideshow_composer.import_files",
+                                      text='Import selected files',
+                                      icon='FILE_IMAGE')
+        operator_props.image_strip_frames = addon_prefs.image_strip_frames
+        operator_props.strips_cross_frames = addon_prefs.strips_cross_frames
+        operator_props.generate_ken_burns_effect = addon_prefs.generate_ken_burns_effect
+
+        row = box.row()
+        operator_props = row.operator("slideshow_composer.import_directory",
+                                      text='Import all from directory',
+                                      icon='FILE_FOLDER')
         operator_props.image_strip_frames = addon_prefs.image_strip_frames
         operator_props.strips_cross_frames = addon_prefs.strips_cross_frames
         operator_props.generate_ken_burns_effect = addon_prefs.generate_ken_burns_effect

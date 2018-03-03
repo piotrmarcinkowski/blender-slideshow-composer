@@ -1,5 +1,6 @@
 import bpy
 
+
 class KenBurnsEffectPreferences:
     ken_burns_transformation_x_value = bpy.props.FloatProperty(
         name="Transformation X",
@@ -73,7 +74,8 @@ class KenBurnsEffectPreferences:
         max=100
     )
 
-class ImportPreferences:
+
+class StripsCreatorPreferences:
     image_strip_frames = bpy.props.IntProperty(
         name="Image strip frames",
         description="Number of frames each imported image strip will last",
@@ -94,7 +96,8 @@ class ImportPreferences:
         default=True
     )
 
-class SlideshowComposerPreferences(bpy.types.AddonPreferences, KenBurnsEffectPreferences, ImportPreferences):
+
+class SlideshowComposerPreferences(bpy.types.AddonPreferences, KenBurnsEffectPreferences, StripsCreatorPreferences):
     # this must match the addon name, use '__package__'
     # when defining this in a submodule of a python package.
     bl_idname = __package__

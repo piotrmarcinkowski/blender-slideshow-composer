@@ -148,8 +148,8 @@ class KenBurnsEffect(bpy.types.Operator, preferences.KenBurnsEffectPreferences):
             return KenBurnsEffect.RotateAnimator(
                 sequence,
                 value=generate_random_float(
-                    preferences.ken_burns_transformation_rotate_value,
-                    preferences.ken_burns_transformation_rotate_value_max_deviation),
+                    preferences.ken_burns_transformation_rotation_value,
+                    preferences.ken_burns_transformation_rotation_value_max_deviation),
                 reverse=generate_random_bool())
 
     @classmethod
