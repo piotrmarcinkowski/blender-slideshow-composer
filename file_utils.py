@@ -10,13 +10,15 @@ def find_files_recursively(path_list, extension_list=[*IMAGE_EXTENSIONS, *MOVIE_
     found_files = []
     pattern = '|'.join(['(' + ext_pattern + ')' for ext_pattern in ['.*\.' + ext for ext in extension_list]])
     for path in path_list:
-        print('Checking path: {}'.format(path))
         if isfile(path) and match(pattern, path):
+            print('Found file {}'.format(path))
             found_files.append(path)
         if isdir(path):
-            dir = dirname(path)
+            print('Recursively importing directory {}'.format(path))
+            files_in_dir = [join(path, file) for file in listdir(path)]
+            print('Files in directory: {}'.format(len(files_in_dir)))
             found_files.extend(
-                find_files_recursively(path_list=[join(dir, file) for file in listdir(path)],
+                find_files_recursively(path_list=files_in_dir,
                                        extension_list=extension_list))
     return found_files
 

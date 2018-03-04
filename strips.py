@@ -10,6 +10,7 @@ class StripsCreator(preferences.StripsCreatorPreferences):
         previous_strip = None
         previous_transform_strip = None
 
+        print("Total files to import: {}".format(len(files)))
         for file in files:
             #temporary
             print("Creating strip for: {}".format(file))
