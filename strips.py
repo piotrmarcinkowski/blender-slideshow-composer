@@ -1,4 +1,5 @@
 import bpy
+import os.path
 from . import preferences
 from . import file_utils
 
@@ -48,10 +49,12 @@ class StripsCreator(preferences.StripsCreatorPreferences):
             return None
 
     def create_image_strip(self, path, frame_start, frame_end, channel):
-        file_list = [{'name': path}]
+
+        (directory, file) = os.path.split(path)
+        file_list = [{'name': file}]
 
         bpy.ops.sequencer.image_strip_add(
-            directory=self.directory,
+            directory=directory,
             files=file_list,
             show_multiview=False,
             frame_start=frame_start,
