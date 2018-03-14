@@ -28,10 +28,8 @@ class StripsCreator(preferences.StripsCreatorPreferences):
                     frame_start=frame_start,
                     frame_end=frame_end)
                 current_strip = bpy.context.selected_sequences[0]
-                # Add transform strip for image
-                current_transform_strip = self.create_transform_strip(
-                    frame_start=frame_start,
-                    frame_end=frame_end)
+                # Add transform strip
+                current_transform_strip = self.create_transform_strip(strip=current_strip)
                 current_strip.mute = True
                 # Generate KenBurns effect on added transform strip if enabled
                 if self.generate_ken_burns_effect:
@@ -43,6 +41,12 @@ class StripsCreator(preferences.StripsCreatorPreferences):
                     files=file_list,
                     frame_start=frame_start)
                 current_strip = bpy.context.selected_sequences[0]
+                # Add transform strip
+                current_transform_strip = self.create_transform_strip(strip=current_strip)
+                current_strip.mute = True
+                # Apply scale on movie transform strip
+                current_transform_strip.use_uniform_scale = True
+                current_transform_strip.scale_start_x = self.movie_strips_scale
                 frame_end = current_strip.frame_final_end
 
             # Create cross effect
@@ -60,11 +64,15 @@ class StripsCreator(preferences.StripsCreatorPreferences):
             frame_current = frame_end + 1 - self.strips_cross_frames
             previous_strip = current_strip
             previous_transform_strip = current_transform_strip
-        return bpy.context.selected_sequences[0];
+        return bpy.context.selected_sequences[0]
 
-    def create_transform_strip(self, frame_start, frame_end):
-        bpy.ops.sequencer.effect_strip_add(frame_start=frame_start, frame_end=frame_end, type='TRANSFORM')
-        return bpy.context.selected_sequences[0];
+    def create_transform_strip(self, strip):
+        # deselect all strips before adding transform strip - this is especially needed when adding transform effect
+        # to movie clip that, once imported, creates two selected strips, one for movie and one for sound
+        bpy.ops.sequencer.select_all(action="DESELECT")
+        strip.select = True
+        bpy.ops.sequencer.effect_strip_add(type='TRANSFORM')
+        return bpy.context.selected_sequences[0]
 
     def create_cross(self, first_strip, second_strip):
         bpy.ops.sequencer.select_all(action="DESELECT")

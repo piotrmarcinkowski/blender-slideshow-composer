@@ -96,6 +96,13 @@ class StripsCreatorPreferences:
         default=True
     )
 
+    movie_strips_scale = bpy.props.FloatProperty(
+        name="Movie strips scale",
+        description="Scale factor applied to every imported movie",
+        default=1.15,
+        min=1.0
+    )
+
 
 class SlideshowComposerPreferences(bpy.types.AddonPreferences, KenBurnsEffectPreferences, StripsCreatorPreferences):
     # this must match the addon name, use '__package__'
