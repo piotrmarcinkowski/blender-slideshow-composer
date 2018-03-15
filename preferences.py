@@ -50,10 +50,16 @@ class KenBurnsEffectPreferences:
         min=0.0
     )
 
+    ken_burns_transformation_rotation_enabled = bpy.props.BoolProperty(
+        name="Use rotation",
+        description="Use rotation in KenBurns generated effect",
+        default=False,
+    )
+
     ken_burns_transformation_rotation_value = bpy.props.FloatProperty(
         name="Rotation",
         description="Ken Burns effect rotation value",
-        default=1.0,
+        default=3.0,
         max=5.0,
         min=0.0
     )
@@ -86,7 +92,7 @@ class StripsCreatorPreferences:
     strips_cross_frames = bpy.props.IntProperty(
         name="Strips cross effect frames",
         description="Number of frames the cross effect between two strips will last",
-        default=10,
+        default=20,
         min=5
     )
 

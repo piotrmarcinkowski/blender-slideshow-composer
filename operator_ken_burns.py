@@ -197,8 +197,10 @@ class KenBurnsEffect(bpy.types.Operator, preferences.KenBurnsEffectPreferences):
         animator_types = [
             KenBurnsEffect.ScaleAnimator,
             KenBurnsEffect.TranslateXAnimator,
-            KenBurnsEffect.TranslateYAnimator,
-            KenBurnsEffect.RotateAnimator]
+            KenBurnsEffect.TranslateYAnimator]
+
+        if self.ken_burns_transformation_rotation_enabled:
+            animator_types.append(KenBurnsEffect.RotateAnimator)
 
         # by default there is only one animator per image strip, eg. only translation.
         # from time to time the number of combined animations can raise to 2
