@@ -28,6 +28,7 @@ class StripsCreator(preferences.StripsCreatorPreferences):
                     frame_start=frame_start,
                     frame_end=frame_end)
                 current_strip = bpy.context.selected_sequences[0]
+                current_strip.blend_type = 'ALPHA_OVER'
                 # Add transform strip
                 current_transform_strip = self.create_transform_strip(strip=current_strip)
                 current_strip.mute = True
