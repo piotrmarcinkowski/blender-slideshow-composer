@@ -92,7 +92,7 @@ class FixAspectRatioOperation(Operation):
     def apply(self, path):
         if self.is_file_valid(path):
             self.read_image_properties(path)
-            if not self.has_valid_aspect_ratio():
+            if not self.has_valid_aspect_ratio() or not self.has_valid_exif_orientation():
                 if args.verbose:
                     print('Fixing orientation: {}'.format(path))
                 (dir, file) = os.path.split(path)
