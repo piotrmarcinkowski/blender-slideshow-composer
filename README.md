@@ -30,3 +30,9 @@ When using import option, transitions between strips are automatically generated
 Used libraries and 3rd party code
 ---------------------------------
 * https://github.com/JacquesLucke/code_autocomplete
+
+Additional Tools
+-----
+In tools folder there is a script to prepare files before importing to VSE. Use it if you want to
+- Stabilize video files, remove camera shaking (requires [ffmpeg](https://www.ffmpeg.org/))
+- Fix aspect ratio of images (requires [imagemagick](https://www.imagemagick.org/))
