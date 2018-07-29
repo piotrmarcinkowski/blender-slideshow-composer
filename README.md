@@ -1,9 +1,23 @@
 Blender Slideshow Composer
 ==========================
 
-Create menu shortcut
---------------------
+General information
+-------------------
+This is Blender plugin that can be used to generate slideshows consisted of images and videos. It uses [Ken Burns effect](https://en.wikipedia.org/wiki/Ken_Burns_effect) to make nice-looking transitions between imported slides. 
 
+Can I use it for my project?
+----------------------------
+This plugin was created for my own needs of creating holiday family movies. I'm releasing the source code - do whatever you want with it. Any contribution to this repository is highly welcome :)   
+
+How to use it
+-------------
+Once installed, the plugin adds a menu to import files to the VSE Movie Clip Editor.
+
+![Imported strips example](docs/imported_strips.png)
+
+Other options
+--------------------
+When using import option, transitions between strips are automatically generated. The generated transition can be changed for selected strip by using context menu. In order to add the context menu follow the steps:
 1. Open up User Preferences -> Input tab
 2. Expand Sequencer -> Sequencer (Global)
 3. Create new Call Menu entry
