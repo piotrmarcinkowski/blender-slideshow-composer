@@ -34,5 +34,5 @@ Used libraries and 3rd party code
 Additional Tools
 -----
 In tools folder there is a script to prepare files before importing to VSE. Use it if you want to
-- Stabilize video files, remove camera shaking (requires [ffmpeg](https://www.ffmpeg.org/))
-- Fix aspect ratio of images (requires [imagemagick](https://www.imagemagick.org/))
+* Stabilize video files, remove camera shaking (requires [ffmpeg](https://www.ffmpeg.org/))
+* Fix aspect ratio of images (requires [imagemagick](https://www.imagemagick.org/))
