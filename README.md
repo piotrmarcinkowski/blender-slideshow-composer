@@ -3,15 +3,15 @@ Blender Slideshow Composer
 
 General information
 -------------------
-This is Blender plugin that can be used to generate slideshows consisted of images and videos. It uses [Ken Burns effect](https://en.wikipedia.org/wiki/Ken_Burns_effect) to make nice-looking transitions between imported slides. 
+This is a Blender addon that can be used to generate slideshow presentations consisted of images and videos. It uses [Ken Burns effect](https://en.wikipedia.org/wiki/Ken_Burns_effect) to make nice-looking move effects of imported images. 
 
 Can I use it for my project?
 ----------------------------
-This plugin was created for my own needs of creating holiday family movies. I'm releasing the source code - do whatever you want with it. Any contribution to this repository is highly welcome :)   
+This addon was created for my own needs of creating holiday family movies. I'm releasing the source code - do whatever you want with it. Any contribution to this repository is highly welcome :)   
 
 How to use it
 -------------
-Once installed, the plugin adds a menu to import files to the VSE Movie Clip Editor.
+Once installed, the plugin adds a menu to import files to the VSE Movie Clip Editor. The most common usage of this plugin is to import all image/movie files from a single directory. The files are ordered by name. Additionally, sub-folders are searched for files - that gives more control on import order, eg. files can be arranged in sub-folders that correspond to movie chapters. The following image shows example import result - image and movie strips are added to VSE editor along with appropriate cross effects.
 
 ![Imported strips example](docs/imported_strips.png)
 
